@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 50px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        h2 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Центрируем элементы формы по горизонтали */
+        }
+        label {
+            text-align: left; /* Оставляем текст меток слева */
+            margin-bottom: 5px;
+            color: #666;
+            display: block; /* Превращаем метки в блочные элементы для корректного выравнивания */
+        }
+        input[type="email"],
+        input[type="password"] {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            width: 100%; /* Растягиваем поля ввода на всю доступную ширину контейнера */
+            box-sizing: border-box; /* Учитываем padding внутри ширины элемента */
+        }
+        .form-group {
+            width: 100%; /* Растягиваем группы форм на всю доступную ширину контейнера */
+            margin-bottom: 20px;
+            text-align: left; /* Выравниваем текст меток внутри группы слева */
+        }
+        .auth-button {
+            padding: 10px 20px;
+            font-size: 1em;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%; /* Растягиваем кнопку на всю ширину группы формы */
+        }
+        .auth-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Log In</h2>
+    <form action="/login" method="POST">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="auth-button">Log In</button>
+    </form>
+</div>
+</body>
+</html>
+

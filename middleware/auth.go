@@ -48,7 +48,6 @@ func ValidateToken(c *fiber.Ctx) error {
 	}
 
 	c.Locals("user", token)
-	log.Println(c.Locals("user"))
 	return c.Next()
 }
 

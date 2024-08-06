@@ -7,74 +7,77 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
         }
+
         .container {
-            text-align: center;
-            background-color: #fff;
-            padding: 50px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
+            background: #fff;
+            padding: 20px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
         }
+
         h2 {
-            font-size: 1.5em;
+            margin-bottom: 20px;
             color: #333;
-            margin-bottom: 20px;
         }
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Центрируем элементы формы по горизонтали */
-        }
-        label {
-            text-align: left; /* Оставляем текст меток слева */
-            margin-bottom: 5px;
-            color: #666;
-            display: block; /* Превращаем метки в блочные элементы для корректного выравнивания */
-        }
-        input[type="email"],
-        input[type="password"] {
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1em;
-            width: 100%; /* Растягиваем поля ввода на всю доступную ширину контейнера */
-            box-sizing: border-box; /* Учитываем padding внутри ширины элемента */
-        }
+
         .form-group {
-            width: 100%; /* Растягиваем группы форм на всю доступную ширину контейнера */
-            margin-bottom: 20px;
-            text-align: left; /* Выравниваем текст меток внутри группы слева */
+            margin-bottom: 15px;
         }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
         .auth-button {
-            padding: 10px 20px;
-            font-size: 1em;
-            color: #fff;
-            background-color: #007bff;
+            display: inline-block;
+            width: 100%;
+            padding: 10px 0;
+            background: #007bff;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%; /* Растягиваем кнопку на всю ширину группы формы */
+            transition: background 0.3s;
         }
+
         .auth-button:hover {
-            background-color: #0056b3;
+            background: #0056b3;
         }
+
         .error {
+            display: none;
             color: red;
-            margin-bottom: 20px;
-            display: none; /* По умолчанию скрываем сообщение об ошибке */
+            margin-top: 10px;
         }
     </style>
     <script>
-        function signUp(event) {
+        async function signUp(event) {
             event.preventDefault(); // Предотвращаем отправку формы по умолчанию
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
@@ -83,30 +86,44 @@
             if (password !== confirmPassword) {
                 error.style.display = 'block';
                 error.textContent = 'Passwords do not match.';
+                return;
             } else {
                 error.style.display = 'none';
-                // Отправляем POST-запрос
-                const formData = new FormData();
-                formData.append('email', document.getElementById('email').value);
-                formData.append('password', password);
+            }
 
-                fetch('/signup', {
+            const formData = {
+                email: document.getElementById('email').value,
+                password: password
+            };
+
+            try {
+                const response = await fetch('/signup', {
                     method: 'POST',
-                    body: formData
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        // Можно добавить логику обработки успешной регистрации здесь
-                        alert('Registration successful!');
-                        // Опционально: перенаправление на другую страницу
-                        // window.location.href = '/dashboard';
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        // Здесь можно добавить обработку ошибок, если не удалось выполнить регистрацию
-                    });
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.redirected) {
+                    // Если ответ был перенаправлен, перенаправляем пользователя на новую страницу
+                    window.location.href = response.url;
+                } else {
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        // Если ответ не успешный, показываем сообщение об ошибке
+                        error.style.display = 'block';
+                        error.textContent = data.message || 'Registration failed.';
+                    } else {
+                        // Обработка успешной регистрации
+                        alert(data.message);
+                    }
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                error.style.display = 'block';
+                error.textContent = 'Registration failed. Please try again later.';
             }
         }
     </script>
@@ -127,7 +144,7 @@
             <label for="confirm-password">Confirm Password:</label>
             <input type="password" id="confirm-password" name="confirm-password" required>
         </div>
-        <div id="error-message" class="error">Passwords do not match.</div>
+        <div id="error-message" class="error"></div>
         <button type="submit" class="auth-button">Sign Up</button>
     </form>
 </div>

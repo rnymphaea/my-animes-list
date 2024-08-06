@@ -7,9 +7,6 @@ import (
 )
 
 func SetupRoutes(app *fiber.App) {
-	//app.Get("/", func(c *fiber.Ctx) error {
-	//	return c.SendFile("pages/index.html")
-	//})
 	app.Get("/", handler.IndexPage)
 	app.Get("/login", func(c *fiber.Ctx) error {
 		return c.SendFile("pages/login.html")
@@ -19,4 +16,6 @@ func SetupRoutes(app *fiber.App) {
 		return c.SendFile("pages/signup.html")
 	})
 	app.Post("/login", handler.Login)
+	app.Post("/signup", handler.SignUp)
+	app.Post("/myanimes", middleware.Authenticated(), handler.AddAnime)
 }

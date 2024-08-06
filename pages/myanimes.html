@@ -33,17 +33,40 @@
             document.getElementById('add-anime-form').style.display = 'block';
         }
 
-        function addAnime(event) {
+        async function addAnime(event) {
             event.preventDefault();
             const animeTitle = document.getElementById('anime-title').value;
             if (animeTitle) {
-                // Здесь вы можете отправить данные на сервер для обработки
-                console.log('Добавлено аниме:', animeTitle);
-                alert('Аниме добавлено: ' + animeTitle);
-                document.getElementById('add-anime-form').reset();
-                document.getElementById('add-anime-form').style.display = 'none';
+                try {
+                    const response = await fetch('/myanimes', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ data: animeTitle }),
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json(); // Парсим JSON только при успешном ответе
+
+                        // Добавляем новое аниме в список
+                        const animeList = document.getElementById('anime-list');
+                        const newAnime = document.createElement('li');
+                        newAnime.innerHTML = `<a href="/myanimes/${result.id}">${result.title}</a>`;
+                        animeList.appendChild(newAnime);
+
+                        document.getElementById('add-anime-form').reset();
+                        document.getElementById('add-anime-form').style.display = 'none';
+                        window.location.reload();
+                    } else {
+                        alert('Ошибка при добавлении сука аниме');
+                    }
+                } catch (error) {
+                    alert(error);
+                }
             }
         }
+
     </script>
 </head>
 <body>
@@ -51,10 +74,11 @@
 <h1>Просмотренные Аниме</h1>
 
 <ul id="anime-list">
-    <li><a href="/myanimes/1">Naruto</a></li>
-    <li><a href="/myanimes/2">Attack on Titan</a></li>
-    <li><a href="/myanimes/3">My Hero Academia</a></li>
-    <!-- Добавьте другие просмотренные аниме здесь -->
+    {{range .Animes}}
+    <li>
+        <a href="/myanimes/{{.ID}}">{{.Title}}</a>
+    </li>
+    {{end}}
 </ul>
 
 <button onclick="showAddAnimeForm()">Добавить Аниме</button>

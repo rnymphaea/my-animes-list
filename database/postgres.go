@@ -1,14 +1,17 @@
 package database
 
 import (
-	"anime/database/models"
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/jackc/pgx/v5/pgxpool"
-	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
+
+	"github.com/jackc/pgx/v5/pgxpool"
+	"golang.org/x/crypto/bcrypt"
+
+	"anime/config"
+	"anime/database/models"
 )
 
 type storage struct {
@@ -18,7 +21,11 @@ type storage struct {
 var db storage
 
 func ConnectDB() (*pgxpool.Pool, error) {
-	pool, err := pgxpool.New(context.Background(), "postgres://postgres:psql@localhost:5432/animes_list")
+	db_url, ok := config.Get("db_url")
+	if !ok {
+		log.Fatal("db_url env variable not set")
+	}
+	pool, err := pgxpool.New(context.Background(), db_url)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,6 +65,7 @@ func CreateTables(conn *pgxpool.Pool) {
 }
 
 func CreateUser(email, password string) error {
+	log.Printf("Create user with email: %s, password: %s", email, password)
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 4)
 	if err != nil {
 		return err
@@ -66,6 +74,7 @@ func CreateUser(email, password string) error {
 
 	_, err = db.pool.Exec(context.Background(), "INSERT INTO users(email, password) values($1, $2)", email, pass)
 	if err != nil {
+		log.Println("Create user", err)
 		return err
 	}
 	return nil
@@ -125,14 +134,17 @@ func GetAnimeList(email string) ([]models.Anime, error) {
 func AddAnime(email, title string) error {
 	userID, err := getUserIDbyEmail(email)
 	if err != nil {
-		log.Println(err)
+		log.Println("database/postgres.AddAnime - userID: ", err)
+		return err
 	}
 	animeID, err := getAnimeIDbyTitle(title)
 	if err != nil {
-		log.Println(err)
+		log.Println("database/postgres.AddAnime - animeID: ", err)
+		return err
 	}
 	_, err = db.pool.Exec(context.Background(), "INSERT INTO user_anime_list(user_id, anime_id) VALUES($1, $2)", userID, animeID)
 	if err != nil {
+		log.Println("database/postgres.AddAnime - exec: ", err)
 		return err
 	} else {
 		log.Println("Success")
@@ -150,6 +162,17 @@ func getAnimeIDbyTitle(title string) (int, error) {
 	}
 }
 
+func GetAnimebyID(id int) (models.Anime, error) {
+	var anime models.Anime
+	row := db.pool.QueryRow(context.Background(), "SELECT mal_id, title, description, episodes FROM anime WHERE mal_id=$1", id)
+	if err := row.Scan(&anime.ID, &anime.Title, &anime.Description, &anime.Episodes); err != nil {
+		log.Println("database/postgres.GetAnimebyID: ", err)
+		return anime, err
+	} else {
+		return anime, nil
+	}
+}
+
 func getUserIDbyEmail(email string) (int, error) {
 	var id int
 	row := db.pool.QueryRow(context.Background(), "SELECT id FROM users WHERE email = $1", email)
@@ -158,4 +181,15 @@ func getUserIDbyEmail(email string) (int, error) {
 	} else {
 		return id, nil
 	}
+}
+
+func CheckPassword(email, password string) (bool, error) {
+	var passInDB string
+	row := db.pool.QueryRow(context.Background(), "SELECT password FROM users WHERE email = $1", email)
+	if err := row.Scan(&passInDB); err != nil {
+		log.Println("database/postgres.CheckPassword: ", err)
+		return false, err
+	}
+	check := bcrypt.CompareHashAndPassword([]byte(passInDB), []byte(password))
+	return check == nil, nil
 }

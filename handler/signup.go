@@ -1,12 +1,14 @@
 package handler
 
 import (
-	"anime/config"
-	"anime/database"
-	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v4"
 	"log"
 	"time"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v4"
+
+	"anime/config"
+	"anime/database"
 )
 
 func SignUp(c *fiber.Ctx) error {
@@ -31,7 +33,11 @@ func SignUp(c *fiber.Ctx) error {
 	claims["email"] = creds.Email
 	claims["exp"] = time.Now().Add(time.Second * 30).Unix()
 
-	t, err := token.SignedString(config.Get("jwtsecret"))
+	secret, ok := config.Get("jwtsecret")
+	if !ok {
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+	t, err := token.SignedString([]byte(secret))
 
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
@@ -42,7 +48,5 @@ func SignUp(c *fiber.Ctx) error {
 		HTTPOnly: true,
 	})
 	return c.Redirect("/", fiber.StatusSeeOther)
-	//return c.JSON(fiber.Map{
-	//	"message": "User registered successfully",
-	//})
+
 }

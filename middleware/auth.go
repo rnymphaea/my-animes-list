@@ -1,17 +1,24 @@
 package middleware
 
 import (
-	"anime/config"
+	"log"
+	"time"
+
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
-	"log"
-	"time"
+
+	"anime/config"
 )
 
 func Authenticated() func(c *fiber.Ctx) error {
+	secret, ok := config.Get("jwtsecret")
+	if !ok {
+		log.Fatal("JWT secret not set")
+	}
+
 	jwtConfig := jwtware.Config{
-		SigningKey:     jwtware.SigningKey{Key: config.Get("jwtsecret")},
+		SigningKey:     jwtware.SigningKey{Key: []byte(secret)},
 		TokenLookup:    "cookie:jwt",
 		ContextKey:     "user",
 		SuccessHandler: ValidateToken,
@@ -28,11 +35,16 @@ func ValidateToken(c *fiber.Ctx) error {
 
 	claims := jwt.MapClaims{}
 	token, err := jwt.ParseWithClaims(cookieJWT, claims, func(token *jwt.Token) (interface{}, error) {
-		return config.Get("jwtsecret"), nil
+		secret, ok := config.Get("jwtsecret")
+		if !ok {
+			log.Fatal("JWT secret not set")
+		}
+
+		return []byte(secret), nil
 	})
 
 	if err != nil {
-		log.Println(err)
+		log.Println("middleware/auth.go: ", err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid JWT"})
 	}
 
@@ -52,6 +64,7 @@ func ValidateToken(c *fiber.Ctx) error {
 }
 
 func jwtError(c *fiber.Ctx, err error) error {
+	log.Println(c.Request())
 	if err.Error() == "Missing or malformed JWT" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}

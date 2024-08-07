@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Page</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff; /* Light blue background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .anime-container {
+            background-color: #ffffff; /* White background */
+            border: 1px solid #dcdcdc; /* Light gray border */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            text-align: left;
+        }
+
+        .anime-title {
+            color: #1e90ff; /* Dodger blue color */
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .anime-description {
+            color: #333333; /* Dark gray color */
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+
+        .anime-episodes {
+            color: #1e90ff; /* Dodger blue color */
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="anime-container">
+    <h1 class="anime-title">{{.Title}}</h1>
+    <p class="anime-episodes">Episodes: {{.Episodes}}</p>
+    <p class="anime-description">
+        {{.Description}}
+    </p>
+</div>
+</body>
+</html>

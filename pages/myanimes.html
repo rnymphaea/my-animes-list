@@ -5,27 +5,99 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Просмотренные Аниме</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            margin: 0;
+            padding: 20px;
         }
+
+        h1 {
+            color: #0044cc;
+            margin-bottom: 40px;
+        }
+
         ul {
             list-style-type: none;
             padding: 0;
+            max-width: 600px;
         }
+
         li {
+            background-color: #fff;
             margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
         }
+
+        li:hover {
+            transform: translateY(-5px);
+        }
+
         li a {
             text-decoration: none;
-            color: blue;
+            color: #0044cc;
+            font-weight: 700;
         }
+
         li a:hover {
             text-decoration: underline;
         }
+
+        button {
+            display: block;
+            width: 200px;
+            margin: 20px 0;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #0044cc;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #003399;
+        }
+
         .add-anime-form {
             display: none;
             margin-top: 20px;
+            max-width: 600px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-anime-form h2 {
+            margin-top: 0;
+            color: #0044cc;
+        }
+
+        .add-anime-form label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .add-anime-form input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .add-anime-form button[type="submit"] {
+            width: 100%;
         }
     </style>
     <script>
@@ -59,14 +131,13 @@
                         document.getElementById('add-anime-form').style.display = 'none';
                         window.location.reload();
                     } else {
-                        alert('Ошибка при добавлении сука аниме');
+                        alert('Ошибка при добавлении аниме');
                     }
                 } catch (error) {
                     alert(error);
                 }
             }
         }
-
     </script>
 </head>
 <body>

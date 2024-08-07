@@ -1,11 +1,14 @@
 package handler
 
 import (
-	"anime/database"
-	"anime/middleware"
+	"log"
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
-	"log"
+
+	"anime/database"
+	"anime/middleware"
 )
 
 func MyAnimeHandler(c *fiber.Ctx) error {
@@ -27,6 +30,7 @@ func AddAnime(c *fiber.Ctx) error {
 		Title string `json:"data"`
 	}
 	user := c.Locals("user")
+
 	if user == nil {
 		return c.SendStatus(fiber.StatusUnauthorized)
 	}
@@ -42,6 +46,16 @@ func AddAnime(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true})
+}
+
+func ShowAnimeInfo(c *fiber.Ctx) error {
+	id, _ := strconv.Atoi(c.Params("num"))
+	anime, err := database.GetAnimebyID(id)
+	if err != nil {
+		log.Println(err)
+		return c.SendStatus(fiber.StatusBadRequest)
+	}
+	return c.Render("anime", fiber.Map{"Title": anime.Title, "Description": anime.Description, "Episodes": anime.Episodes})
 }
 
 func IndexPage(c *fiber.Ctx) error {

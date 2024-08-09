@@ -11,12 +11,12 @@ func SetupRoutes(app *fiber.App) {
 	app.Get("/", handler.IndexPage)
 
 	app.Get("/login", func(c *fiber.Ctx) error {
-		return c.SendFile("pages/login.html")
+		return c.SendFile("assets/pages/login.html")
 	})
 	app.Post("/login", handler.Login)
 
 	app.Get("/signup", func(c *fiber.Ctx) error {
-		return c.SendFile("pages/signup.html")
+		return c.SendFile("assets/pages/signup.html")
 	})
 	app.Post("/signup", handler.SignUp)
 

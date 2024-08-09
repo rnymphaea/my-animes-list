@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #e0f7fa; /* Мягкий голубой фон */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: linear-gradient(135deg, #ffffff 0%, #e0f7fa 100%); /* Градиент фона контейнера */
+            padding: 40px 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h2 {
+            margin-bottom: 25px;
+            color: #007bb5;
+            font-size: 2em;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #007bb5; /* Синий цвет текста для меток */
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #007bb5; /* Синяя рамка */
+            border-radius: 25px; /* Округленные края */
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #005f87; /* Более темный синий цвет рамки при фокусе */
+            box-shadow: 0 0 8px rgba(0, 91, 135, 0.5); /* Подсветка при фокусе */
+            outline: none;
+        }
+
+        .auth-button {
+            display: inline-block;
+            width: 100%;
+            padding: 12px 0;
+            background: #007bb5;
+            border: none;
+            border-radius: 25px;
+            color: #ffffff;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-button:hover {
+            background-color: #005f87; /* Более темный синий цвет при наведении */
+            transform: translateY(-3px); /* Анимация при наведении */
+        }
+
+        .error {
+            display: none;
+            color: red;
+            margin-top: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+    <script>
+        async function signUp(event) {
+            event.preventDefault(); // Предотвращаем отправку формы по умолчанию
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const error = document.getElementById('error-message');
+
+            if (password !== confirmPassword) {
+                error.style.display = 'block';
+                error.textContent = 'Passwords do not match.';
+                return;
+            } else {
+                error.style.display = 'none';
+            }
+
+            const formData = {
+                email: document.getElementById('email').value,
+                password: password
+            };
+
+            try {
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.redirected) {
+                    // Если ответ был перенаправлен, перенаправляем пользователя на новую страницу
+                    window.location.href = response.url;
+                } else {
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        // Если ответ не успешный, показываем сообщение об ошибке
+                        error.style.display = 'block';
+                        error.textContent = data.message || 'Registration failed.';
+                    } else {
+                        // Обработка успешной регистрации
+                        alert(data.message);
+                    }
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                error.style.display = 'block';
+                error.textContent = 'Registration failed. Please try again later.';
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h2>Sign Up</h2>
+    <form id="signup-form" onsubmit="signUp(event)">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <label for="confirm-password">Confirm Password:</label>
+            <input type="password" id="confirm-password" name="confirm-password" required>
+        </div>
+        <div id="error-message" class="error"></div>
+        <button type="submit" class="auth-button">Sign Up</button>
+    </form>
+</div>
+</body>
+</html>

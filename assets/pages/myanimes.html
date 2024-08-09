@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Просмотренные Аниме</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #e0f7fa; /* Мягкий голубой фон */
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #007bb5;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        li {
+            background-color: #ffffff;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 15px; /* Закругленные края */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        li:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Более выраженная тень при наведении */
+        }
+
+        li a {
+            text-decoration: none;
+            color: #007bb5;
+            font-weight: bold;
+            font-size: 1.2em;
+            transition: color 0.3s ease;
+        }
+
+        li a:hover {
+            text-decoration: underline;
+            color: #005f87; /* Темно-синий цвет при наведении */
+        }
+
+        button {
+            display: block;
+            width: 220px;
+            margin: 20px 0;
+            padding: 12px;
+            font-size: 1.1em;
+            color: #fff;
+            background-color: #007bb5;
+            border: none;
+            border-radius: 25px; /* Закругленные края */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: #005f87;
+            transform: translateY(-3px); /* Анимация при наведении */
+        }
+
+        .add-anime-form {
+            display: none;
+            margin-top: 20px;
+            max-width: 600px;
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 15px; /* Закругленные края */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        .add-anime-form h2 {
+            margin-top: 0;
+            color: #007bb5;
+            font-size: 2em;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-anime-form label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #007bb5;
+        }
+
+        .add-anime-form input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .add-anime-form input[type="text"]:focus {
+            border-color: #007bb5;
+            box-shadow: 0 0 8px rgba(0, 91, 135, 0.5);
+            outline: none;
+        }
+
+        .add-anime-form button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bb5;
+            border: none;
+            border-radius: 25px;
+            color: #ffffff;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-anime-form button[type="submit"]:hover {
+            background-color: #005f87;
+            transform: translateY(-3px);
+        }
+
+        #error-message {
+            display: none;
+            color: #cc0000;
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+    <script>
+        function showAddAnimeForm() {
+            document.getElementById('add-anime-form').style.display = 'block';
+        }
+
+        async function addAnime(event) {
+            event.preventDefault();
+            const animeTitle = document.getElementById('anime-title').value;
+            const errorMessageElement = document.getElementById('error-message');
+
+            if (animeTitle) {
+                try {
+                    const response = await fetch('/myanimes', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ data: animeTitle }),
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+
+                        // Добавляем новое аниме в список
+                        const animeList = document.getElementById('anime-list');
+                        const newAnime = document.createElement('li');
+                        newAnime.innerHTML = `<a href="/myanimes/${result.id}">${result.title}</a>`;
+                        animeList.appendChild(newAnime);
+
+                        // Скрываем форму и сбрасываем сообщение об ошибке
+                        document.getElementById('add-anime-form').reset();
+                        document.getElementById('add-anime-form').style.display = 'none';
+                        errorMessageElement.style.display = 'none';
+                        window.location.reload();
+                    } else if (response.status === 401) {
+                        // Показываем сообщение об ошибке
+                        errorMessageElement.textContent = 'Вы не авторизованы. Пожалуйста, войдите в систему.';
+                        errorMessageElement.style.display = 'block';
+                    } else if (response.status === 409) {
+                        alert('Аниме уже есть в вашем списке');
+                    } else {
+                        alert('Ошибка при добавлении аниме');
+                    }
+                } catch (error) {
+                    alert('Произошла ошибка: ' + error);
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+
+<h1>Просмотренные Аниме</h1>
+
+<div id="error-message"></div>
+
+<ul id="anime-list">
+    {{range .Animes}}
+    <li>
+        <a href="/myanimes/{{.ID}}">{{.Title}}</a>
+    </li>
+    {{end}}
+</ul>
+
+<button onclick="showAddAnimeForm()">Добавить Аниме</button>
+
+<form id="add-anime-form" class="add-anime-form" onsubmit="addAnime(event)">
+    <h2>Добавить новое аниме</h2>
+    <label for="anime-title">Название аниме:</label>
+    <input type="text" id="anime-title" name="anime-title" required>
+    <button type="submit">Добавить</button>
+</form>
+
+</body>
+</html>

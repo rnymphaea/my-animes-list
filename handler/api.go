@@ -43,6 +43,12 @@ func AddAnime(c *fiber.Ctx) error {
 
 	if err := database.AddAnime(email, rq.Title); err != nil {
 		log.Println(err)
+		if err.Error() == "anime is already in list" {
+			return c.Status(fiber.StatusConflict).JSON(fiber.Map{"error": "anime already in list"})
+		} else {
+			return c.SendStatus(fiber.StatusBadRequest)
+		}
+
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true})

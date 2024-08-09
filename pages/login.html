@@ -5,67 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log In</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #e0f7fa; /* Мягкий голубой фон */
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
         }
+
         .container {
             text-align: center;
-            background-color: #fff;
-            padding: 50px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
+            background: linear-gradient(135deg, #ffffff 0%, #e0f7fa 100%); /* Градиент фона контейнера */
+            padding: 50px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            width: 320px;
         }
+
         h2 {
-            font-size: 1.5em;
-            color: #333;
+            font-size: 2em;
+            color: #007bb5;
             margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
+
         form {
             display: flex;
             flex-direction: column;
-            align-items: center; /* Центрируем элементы формы по горизонтали */
+            align-items: center;
         }
+
         label {
-            text-align: left; /* Оставляем текст меток слева */
+            text-align: left;
             margin-bottom: 5px;
-            color: #666;
-            display: block; /* Превращаем метки в блочные элементы для корректного выравнивания */
+            color: #007bb5; /* Синий цвет текста для меток */
+            font-weight: bold;
+            display: block;
         }
+
         input[type="email"],
         input[type="password"] {
-            padding: 10px;
+            padding: 12px;
             margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            border: 1px solid #007bb5; /* Синяя рамка */
+            border-radius: 25px; /* Округленные края */
             font-size: 1em;
-            width: 100%; /* Растягиваем поля ввода на всю доступную ширину контейнера */
-            box-sizing: border-box; /* Учитываем padding внутри ширины элемента */
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: #005f87; /* Более темный синий цвет рамки при фокусе */
+            box-shadow: 0 0 8px rgba(0, 91, 135, 0.5); /* Подсветка при фокусе */
+            outline: none;
+        }
+
         .form-group {
-            width: 100%; /* Растягиваем группы форм на всю доступную ширину контейнера */
+            width: 100%;
             margin-bottom: 20px;
-            text-align: left; /* Выравниваем текст меток внутри группы слева */
+            text-align: left;
         }
+
         .auth-button {
-            padding: 10px 20px;
-            font-size: 1em;
-            color: #fff;
-            background-color: #007bff;
+            padding: 12px 0;
+            font-size: 1.1em;
+            color: #ffffff;
+            background-color: #007bb5;
             border: none;
-            border-radius: 5px;
+            border-radius: 25px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%; /* Растягиваем кнопку на всю ширину группы формы */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            font-weight: bold;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
         }
+
         .auth-button:hover {
-            background-color: #0056b3;
+            background-color: #005f87; /* Более темный синий цвет при наведении */
+            transform: translateY(-3px); /* Анимация при наведении */
         }
     </style>
 </head>
@@ -86,4 +109,3 @@
 </div>
 </body>
 </html>
-

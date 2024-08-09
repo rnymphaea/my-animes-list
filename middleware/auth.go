@@ -65,8 +65,10 @@ func ValidateToken(c *fiber.Ctx) error {
 
 func jwtError(c *fiber.Ctx, err error) error {
 	log.Println(c.Request())
+
 	if err.Error() == "Missing or malformed JWT" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		return c.Render("statusnotok", fiber.Map{"ErrorCode": fiber.StatusBadRequest})
 	}
-	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
+	return c.Render("statusnotok", fiber.Map{"ErrorCode": fiber.StatusUnauthorized})
+
 }

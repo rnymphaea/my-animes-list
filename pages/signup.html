@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7f6;
+            font-family: 'Roboto', sans-serif;
+            background-color: #e0f7fa; /* Мягкий голубой фон */
             margin: 0;
             padding: 0;
             display: flex;
@@ -17,63 +19,75 @@
         }
 
         .container {
-            background: #fff;
-            padding: 20px 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #ffffff 0%, #e0f7fa 100%); /* Градиент фона контейнера */
+            padding: 40px 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
             max-width: 400px;
             width: 100%;
         }
 
         h2 {
-            margin-bottom: 20px;
-            color: #333;
+            margin-bottom: 25px;
+            color: #007bb5;
+            font-size: 2em;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            color: #555;
+            margin-bottom: 8px;
+            color: #007bb5; /* Синий цвет текста для меток */
+            font-weight: bold;
         }
 
         .form-group input {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 12px;
+            border: 1px solid #007bb5; /* Синяя рамка */
+            border-radius: 25px; /* Округленные края */
             box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .form-group input:focus {
-            border-color: #007bff;
+            border-color: #005f87; /* Более темный синий цвет рамки при фокусе */
+            box-shadow: 0 0 8px rgba(0, 91, 135, 0.5); /* Подсветка при фокусе */
             outline: none;
         }
 
         .auth-button {
             display: inline-block;
             width: 100%;
-            padding: 10px 0;
-            background: #007bff;
+            padding: 12px 0;
+            background: #007bb5;
             border: none;
-            border-radius: 4px;
-            color: #fff;
-            font-size: 16px;
+            border-radius: 25px;
+            color: #ffffff;
+            font-size: 1.1em;
+            font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
         }
 
         .auth-button:hover {
-            background: #0056b3;
+            background-color: #005f87; /* Более темный синий цвет при наведении */
+            transform: translateY(-3px); /* Анимация при наведении */
         }
 
         .error {
             display: none;
             color: red;
             margin-top: 10px;
+            font-weight: bold;
+            text-align: center;
         }
     </style>
     <script>

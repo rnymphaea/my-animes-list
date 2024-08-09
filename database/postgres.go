@@ -3,10 +3,12 @@ package database
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"golang.org/x/crypto/bcrypt"
 
@@ -137,19 +139,41 @@ func AddAnime(email, title string) error {
 		log.Println("database/postgres.AddAnime - userID: ", err)
 		return err
 	}
+
 	animeID, err := getAnimeIDbyTitle(title)
 	if err != nil {
 		log.Println("database/postgres.AddAnime - animeID: ", err)
 		return err
 	}
+
+	if animeInList(userID, animeID) {
+		log.Println("database/postgres.AddAnime - animeInList: true")
+		return errors.New("anime is already in list")
+	}
+
 	_, err = db.pool.Exec(context.Background(), "INSERT INTO user_anime_list(user_id, anime_id) VALUES($1, $2)", userID, animeID)
 	if err != nil {
 		log.Println("database/postgres.AddAnime - exec: ", err)
 		return err
 	} else {
-		log.Println("Success")
 		return nil
 	}
+}
+
+func animeInList(userID, animeID int) bool {
+	var id int
+	row := db.pool.QueryRow(context.Background(), "SELECT id FROM user_anime_list WHERE user_id = $1 AND anime_id = $2", userID, animeID)
+
+	if err := row.Scan(&id); err != nil {
+		log.Println("id = ", id)
+		log.Println("animeInList: ", animeID, userID, err)
+		if errors.Is(err, pgx.ErrNoRows) {
+			return false
+		} else {
+			return true
+		}
+	}
+	return true
 }
 
 func getAnimeIDbyTitle(title string) (int, error) {

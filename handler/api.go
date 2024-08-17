@@ -64,6 +64,23 @@ func ShowAnimeInfo(c *fiber.Ctx) error {
 	return c.Render("anime", fiber.Map{"Title": anime.Title, "Description": anime.Description, "Episodes": anime.Episodes})
 }
 
+func DeleteAnime(c *fiber.Ctx) error {
+	user := c.Locals("user")
+	if user == nil {
+		return c.SendStatus(fiber.StatusUnauthorized)
+	}
+	email := user.(*jwt.Token).Claims.(jwt.MapClaims)["email"].(string)
+	id, _ := strconv.Atoi(c.Params("num"))
+	log.Println(email, id)
+	err := database.DeleteAnimeByID(email, id)
+	if err != nil {
+		log.Println(err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err})
+	}
+	log.Println("api.DeleteAnime: ", c.Request())
+	return nil
+}
+
 func IndexPage(c *fiber.Ctx) error {
 	if err := middleware.ValidateToken(c); err != nil {
 		return c.Render("index", fiber.Map{

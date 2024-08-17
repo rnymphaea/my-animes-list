@@ -26,4 +26,5 @@ func SetupRoutes(app *fiber.App) {
 	app.Post("/myanimes", middleware.Authenticated(), handler.AddAnime)
 
 	app.Get("/myanimes/:num", middleware.Authenticated(), handler.ShowAnimeInfo)
+	app.Delete("/myanimes/:num", middleware.Authenticated(), handler.DeleteAnime)
 }

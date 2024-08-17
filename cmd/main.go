@@ -12,8 +12,11 @@ import (
 )
 
 func main() {
-
 	engine := html.New("./assets/pages", ".html")
+
+	app := fiber.New(fiber.Config{
+		Views: engine,
+	})
 
 	conn, err := database.ConnectDB()
 	if err != nil {
@@ -24,10 +27,6 @@ func main() {
 	database.CreateTables(conn)
 
 	//database.AddAllAnimes() # uncomment if table is not filled
-
-	app := fiber.New(fiber.Config{
-		Views: engine,
-	})
 
 	app.Use(logger.New())
 

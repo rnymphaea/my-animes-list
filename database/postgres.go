@@ -165,8 +165,6 @@ func animeInList(userID, animeID int) bool {
 	row := db.pool.QueryRow(context.Background(), "SELECT id FROM user_anime_list WHERE user_id = $1 AND anime_id = $2", userID, animeID)
 
 	if err := row.Scan(&id); err != nil {
-		log.Println("id = ", id)
-		log.Println("animeInList: ", animeID, userID, err)
 		if errors.Is(err, pgx.ErrNoRows) {
 			return false
 		} else {
@@ -205,6 +203,15 @@ func getUserIDbyEmail(email string) (int, error) {
 	} else {
 		return id, nil
 	}
+}
+
+func DeleteAnimeByID(email string, animeID int) error {
+	userID, err := getUserIDbyEmail(email)
+	if err != nil {
+		return err
+	}
+	_, err = db.pool.Exec(context.Background(), "DELETE FROM user_anime_list WHERE user_id = $1 AND anime_id = $2", userID, animeID)
+	return err
 }
 
 func CheckPassword(email, password string) (bool, error) {

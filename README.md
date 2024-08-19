@@ -22,18 +22,18 @@ $ cd my-animes-list && go run cmd/main.go
 ```
 
 ## Allowed endpoints
-| endpoint         |  method  |                          description |
-|------------------|:--------:|-------------------------------------:|
-| `/`              |  `GET`   |                            Main page |
-| `/login`         |  `GET`   |                           Login page |
-| `/login`         |  `POST`  |       Send data to server for log in |
-| `/signup`        |  `GET`   |                          Signup page |
-| `/signup`        |  `POST`  |      Send data to server for sign up |
-| `/myanimes`      |  `GET`   |                  Page with user list |
-| `/myanimes`      |  `POST`  | Send data to server for add an anime |
-| `/myanimes`      | `DELETE` |               Delete anime from list |
-| `/myanimes/<id>` |  `GET`   |       Get info about anime from list |
-| `/logout`        |  `GET`   |                              Log out |
+|      endpoint      |  method  | description                          |
+|:------------------:|:--------:|:-------------------------------------|
+|        `/`         |  `GET`   | Main page                            |
+|      `/login`      |  `GET`   | Login page                           |
+|      `/login`      |  `POST`  | Send data to server for log in       |
+|     `/signup`      |  `GET`   | Signup page                          |
+|     `/signup`      |  `POST`  | Send data to server for sign up      |
+|    `/myanimes`     |  `GET`   | Page with user list                  |
+|    `/myanimes`     |  `POST`  | Send data to server for add an anime |
+|    `/myanimes`     | `DELETE` | Delete anime from list               |
+|  `/myanimes/<id>`  |  `GET`   | Get info about anime from list       |
+|     `/logout`      |  `GET`   | Log out                              |
 
 ## To do
 - [ ] database migrations

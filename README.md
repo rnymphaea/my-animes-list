@@ -1,5 +1,5 @@
 # my-animes-list
-Basic server written in golang + simple fronted that allows user to create his own list of animes that he watched.
+Basic server written in golang + simple frontend that allows user to create his own list of animes that he watched.
 
 ## Summary
 - [Technologies](#technologies)
